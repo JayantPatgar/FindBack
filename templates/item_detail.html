@@ -5,9 +5,18 @@
 <div class="row g-4">
     <div class="col-lg-7">
         <div class="card overflow-hidden">
-            {% if item.image_url %}
-            <img src="{{ item.image_url }}" class="item-image" style="height:300px" alt="Reported item" referrerpolicy="no-referrer">
-            {% else %}
+            
+{% if item.image_url %}
+<div style="width: 100%; height: 320px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; padding: 12px;">
+    <img
+        src="{{ item.image_url }}"
+        alt="{{ item.item_name }}"
+        style="width: 100%; height: 100%; object-fit: contain; display: block;"
+        referrerpolicy="no-referrer"
+    >
+</div>
+{% else %}
+
             <div class="placeholder-image" style="height:200px">🔎</div>
             {% endif %}
             <div class="card-body p-4">
