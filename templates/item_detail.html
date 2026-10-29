@@ -1,0 +1,64 @@
+
+{% extends "base.html" %}
+{% block title %}{{ item.item_name }} — FindBack{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card overflow-hidden">
+            {% if item.image_url %}
+            <img src="{{ item.image_url }}" class="item-image" style="height:300px" alt="Reported item" referrerpolicy="no-referrer">
+            {% else %}
+            <div class="placeholder-image" style="height:200px">🔎</div>
+            {% endif %}
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    {% if item.report_type == 'lost' %}
+                    <span class="badge badge-lost">LOST ITEM</span>
+                    {% else %}
+                    <span class="badge badge-found">FOUND ITEM</span>
+                    {% endif %}
+                    <span class="badge text-bg-light">{{ item.category }}</span>
+                    <span class="badge text-bg-secondary">{{ item.status|title }}</span>
+                </div>
+
+                <h1 class="h2 fw-bold">{{ item.item_name }}</h1>
+                <p class="text-secondary">📍 {{ item.location }}</p>
+                <p>{{ item.description }}</p>
+                <p><strong>Date:</strong> {{ item.found_date.strftime('%d %b %Y') }}</p>
+                <p><strong>Reported by:</strong> {{ item.user.name }}</p>
+
+                {% if session.get('user_id') and session.get('user_id') != item.user_id and item.status == 'open' %}
+                <hr>
+                <h2 class="h5 fw-bold">Submit an ownership claim</h2>
+                <p class="text-secondary small">Explain a detail that can help verify ownership. Don't share passwords or banking information.</p>
+                <form method="POST" action="{{ url_for('claim_item', item_id=item.id) }}">
+                    <textarea class="form-control mb-3" name="message" rows="3" maxlength="2000" placeholder="How can you verify that this item belongs to you?" required></textarea>
+                    <button class="btn btn-primary">Submit claim</button>
+                </form>
+                {% elif not session.get('user_id') and item.status == 'open' %}
+                <a href="{{ url_for('login') }}" class="btn btn-primary">Log in to submit a claim</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card p-4">
+            <h2 class="h5 fw-bold">Possible matches</h2>
+            <p class="text-secondary small">Suggestions based on report details. A match is not proof of ownership.</p>
+            {% for candidate, score in matches %}
+            <div class="border rounded-3 p-3 mb-3">
+                <div class="d-flex justify-content-between gap-2">
+                    <strong>{{ candidate.item_name }}</strong>
+                    <span class="badge text-bg-primary">{{ score }}% similarity</span>
+                </div>
+                <p class="small text-secondary mb-2">{{ candidate.category }} · {{ candidate.location }}</p>
+                <a href="{{ url_for('item_detail', item_id=candidate.id) }}">View possible match →</a>
+            </div>
+            {% else %}
+            <p class="text-secondary mb-0">No possible matches found yet. Check back when more reports are submitted.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

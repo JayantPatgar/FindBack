@@ -1,0 +1,66 @@
+
+{% extends "base.html" %}
+{% block title %}My Dashboard — FindBack{% endblock %}
+{% block content %}
+<h1 class="h2 fw-bold mb-4">My dashboard</h1>
+
+<div class="card p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 fw-bold mb-0">My reports</h2>
+        <a href="{{ url_for('report') }}" class="btn btn-primary btn-sm">+ Report item</a>
+    </div>
+
+    {% for item in items %}
+    <div class="border rounded-3 p-3 mb-3">
+        <div class="d-flex justify-content-between flex-wrap gap-2">
+            <div>
+                <strong>{{ item.item_name }}</strong>
+                <div class="small text-secondary">{{ item.report_type|title }} · {{ item.location }}</div>
+            </div>
+            <span class="badge text-bg-secondary">{{ item.status|title }}</span>
+        </div>
+        <a href="{{ url_for('item_detail', item_id=item.id) }}" class="small">View report</a>
+    </div>
+    {% else %}
+    <p class="text-secondary">You haven't published any reports yet.</p>
+    {% endfor %}
+</div>
+
+<div class="card p-4 mb-4">
+    <h2 class="h5 fw-bold mb-3">Claims on my reports</h2>
+    {% for claim in claims %}
+    <div class="border rounded-3 p-3 mb-3">
+        <div class="d-flex justify-content-between flex-wrap gap-2">
+            <strong>{{ claim.item.item_name }}</strong>
+            <span class="badge text-bg-secondary">{{ claim.status|title }}</span>
+        </div>
+        <p class="small mb-1">Claimant: {{ claim.claimant.name }}</p>
+        <p class="mb-2">{{ claim.message }}</p>
+
+        {% if claim.status == 'pending' and claim.item.status == 'open' %}
+        <form method="POST" action="{{ url_for('review_claim', claim_id=claim.id, action='approve') }}" class="d-inline">
+            <button class="btn btn-success btn-sm" onclick="return confirm('Approve this claim and mark the item as returned?')">Approve & return</button>
+        </form>
+        <form method="POST" action="{{ url_for('review_claim', claim_id=claim.id, action='reject') }}" class="d-inline">
+            <button class="btn btn-outline-danger btn-sm" onclick="return confirm('Reject this claim?')">Reject</button>
+        </form>
+        {% endif %}
+    </div>
+    {% else %}
+    <p class="text-secondary">No one has claimed your reports yet.</p>
+    {% endfor %}
+</div>
+
+<div class="card p-4">
+    <h2 class="h5 fw-bold mb-3">Claims I submitted</h2>
+    {% for claim in my_claims %}
+    <div class="border rounded-3 p-3 mb-2">
+        <strong>{{ claim.item.item_name }}</strong>
+        <span class="badge text-bg-secondary">{{ claim.status|title }}</span>
+        <p class="small text-secondary mb-0">Your claim: {{ claim.message }}</p>
+    </div>
+    {% else %}
+    <p class="text-secondary">You haven't submitted any claims.</p>
+    {% endfor %}
+</div>
+{% endblock %}

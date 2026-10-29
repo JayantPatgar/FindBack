@@ -1,0 +1,95 @@
+
+{% extends "base.html" %}
+{% block title %}Create Account — FindBack{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card p-4 p-md-5">
+            <h1 class="h3 fw-bold mb-2">Join FindBack</h1>
+            <p class="text-secondary mb-4">
+                Create an account to report and recover items.
+            </p>
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Full name</label>
+                    <input
+                        class="form-control"
+                        name="name"
+                        maxlength="100"
+                        required
+                        autocomplete="name"
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email address</label>
+                    <input
+                        class="form-control"
+                        type="email"
+                        name="email"
+                        maxlength="150"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+
+                    <div class="input-group">
+                        <input
+                            class="form-control"
+                            type="password"
+                            id="registerPassword"
+                            name="password"
+                            minlength="8"
+                            required
+                            autocomplete="new-password"
+                        >
+
+                        <button
+                            class="btn btn-primary"
+                            type="button"
+                            onclick="toggleRegisterPassword()"
+                        >
+                            Show
+                        </button>
+                    </div>
+
+                    <small class="text-secondary">
+                        Use at least 8 characters.
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">
+                    Create account
+                </button>
+            </form>
+
+            <p class="text-center mt-4 mb-0">
+                Already registered?
+                <a href="{{ url_for('login') }}">Log in</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleRegisterPassword() {
+    const passwordInput = document.getElementById("registerPassword");
+    const button = passwordInput.nextElementSibling;
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        button.textContent = "Hide";
+    } else {
+        passwordInput.type = "password";
+        button.textContent = "Show";
+    }
+}
+</script>
+{% endblock %}

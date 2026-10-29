@@ -1,0 +1,66 @@
+
+{% extends "base.html" %}
+{% block title %}Report an Item — FindBack{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card p-4 p-md-5">
+            <h1 class="h3 fw-bold">Report an item</h1>
+            <p class="text-secondary">Provide enough information to help someone identify the item. Keep private identifying details confidential.</p>
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">What are you reporting?</label>
+                    <select class="form-select" name="report_type" required>
+                        <option value="">Select report type</option>
+                        <option value="lost">I lost an item</option>
+                        <option value="found">I found an item</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Item name</label>
+                    <input class="form-control" name="item_name" maxlength="150" placeholder="e.g. Black wallet" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" name="category" required>
+                        <option value="">Select category</option>
+                        <option>Wallet / Purse</option>
+                        <option>Mobile phone</option>
+                        <option>ID card</option>
+                        <option>Keys</option>
+                        <option>Bag</option>
+                        <option>Electronics</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="description" rows="4" maxlength="2000" placeholder="Describe the item without exposing private details." required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Location</label>
+                    <input class="form-control" name="location" maxlength="200" placeholder="e.g. College library" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Date lost or found</label>
+                    <input class="form-control" type="date" name="found_date" max="{{ today }}" value="{{ today }}" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Image URL (optional)</label>
+                    <input class="form-control" type="url" name="image_url" maxlength="500" placeholder="https://example.com/item.jpg">
+                    <small class="text-secondary">Use an image URL that you have permission to share.</small>
+                </div>
+
+                <button class="btn btn-primary w-100 py-2">Publish report</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

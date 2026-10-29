@@ -1,0 +1,77 @@
+
+{% extends "base.html" %}
+{% block title %}FindBack — Lost & Found{% endblock %}
+{% block content %}
+<section class="hero mb-4">
+    <h1 class="display-5 fw-bold">Lost something? Find it back.</h1>
+    <p class="lead">Report lost belongings, share found items, and help reconnect people with their possessions.</p>
+    <a href="{{ url_for('report') }}" class="btn btn-light btn-lg mt-2">+ Report an item</a>
+</section>
+
+<div class="card p-3 p-md-4 mb-4">
+    <form method="GET" action="{{ url_for('home') }}" class="row g-2">
+        <div class="col-md-5">
+            <input class="form-control" name="q" value="{{ q }}" placeholder="Search wallet, phone, keys...">
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="category">
+                <option value="">All categories</option>
+                {% for c in ['Wallet / Purse','Mobile phone','ID card','Keys','Bag','Electronics','Other'] %}
+                <option value="{{ c }}" {% if category == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select class="form-select" name="type">
+                <option value="">Lost & found</option>
+                <option value="lost" {% if report_type == 'lost' %}selected{% endif %}>Lost</option>
+                <option value="found" {% if report_type == 'found' %}selected{% endif %}>Found</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-primary">Search</button>
+        </div>
+    </form>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 fw-bold mb-0">Recent reports</h2>
+    <span class="text-secondary">{{ items|length }} items</span>
+</div>
+
+<div class="row g-4">
+    {% for item in items %}
+    <div class="col-sm-6 col-lg-4">
+        <div class="card item-card overflow-hidden">
+            {% if item.image_url %}
+                <img src="{{ item.image_url }}" class="item-image" alt="Reported item" loading="lazy" referrerpolicy="no-referrer">
+            {% else %}
+                <div class="placeholder-image">🔎</div>
+            {% endif %}
+            <div class="card-body">
+                <div class="mb-2">
+                    {% if item.report_type == 'lost' %}
+                    <span class="badge badge-lost">LOST</span>
+                    {% else %}
+                    <span class="badge badge-found">FOUND</span>
+                    {% endif %}
+                    <span class="badge text-bg-light">{{ item.category }}</span>
+                </div>
+                <h3 class="h5 fw-bold">{{ item.item_name }}</h3>
+                <p class="text-secondary small mb-2">📍 {{ item.location }}</p>
+                <p>{{ item.description|truncate(100) }}</p>
+                <a href="{{ url_for('item_detail', item_id=item.id) }}" class="btn btn-outline-primary w-100">View details</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="card p-5 text-center">
+            <h3>No matching reports found</h3>
+            <p class="text-secondary">Try another search or create a new report.</p>
+            <a href="{{ url_for('report') }}" class="btn btn-primary mx-auto">Report an item</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
